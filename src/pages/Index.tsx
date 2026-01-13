@@ -87,16 +87,18 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Icon name="Snowflake" className="text-primary" size={32} />
-            <h1 className="text-2xl font-bold text-foreground">КлиматПро</h1>
+            <h1 className="text-2xl font-bold text-foreground">StroyKlimat</h1>
           </div>
           <nav className="hidden md:flex gap-6">
             <a href="#catalog" className="text-muted-foreground hover:text-primary transition-colors">Каталог</a>
             <a href="#about" className="text-muted-foreground hover:text-primary transition-colors">О нас</a>
             <a href="#contacts" className="text-muted-foreground hover:text-primary transition-colors">Контакты</a>
           </nav>
-          <Button className="gap-2">
-            <Icon name="Phone" size={18} />
-            <span className="hidden sm:inline">Позвонить</span>
+          <Button className="gap-2" asChild>
+            <a href="tel:+79898080823">
+              <Icon name="Phone" size={18} />
+              <span className="hidden sm:inline">+7 (989) 808-08-23</span>
+            </a>
           </Button>
         </div>
       </header>
@@ -277,29 +279,27 @@ const Index = () => {
                     <Icon name="Phone" className="text-primary mt-1" size={20} />
                     <div>
                       <p className="font-semibold">Телефон</p>
-                      <p className="text-muted-foreground">+7 (495) 123-45-67</p>
+                      <a href="tel:+79898080823" className="text-primary hover:underline">+7 (989) 808-08-23</a>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Icon name="Mail" className="text-primary mt-1" size={20} />
                     <div>
                       <p className="font-semibold">Email</p>
-                      <p className="text-muted-foreground">info@klimatpro.ru</p>
+                      <a href="mailto:s.klimat@inbox.ru" className="text-primary hover:underline">s.klimat@inbox.ru</a>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Icon name="MapPin" className="text-primary mt-1" size={20} />
-                    <div>
-                      <p className="font-semibold">Адрес</p>
-                      <p className="text-muted-foreground">г. Москва, ул. Примерная, д. 123</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Icon name="Clock" className="text-primary mt-1" size={20} />
-                    <div>
-                      <p className="font-semibold">Режим работы</p>
-                      <p className="text-muted-foreground">Пн-Пт: 9:00 - 18:00</p>
-                      <p className="text-muted-foreground">Сб-Вс: выходной</p>
+                  <div className="flex flex-col gap-3 pt-2">
+                    <p className="font-semibold">Мессенджеры</p>
+                    <div className="flex gap-3">
+                      <a href="https://t.me/+79898080823" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#0088cc] text-white rounded-lg hover:opacity-90 transition-opacity">
+                        <Icon name="Send" size={18} />
+                        <span className="text-sm">Telegram</span>
+                      </a>
+                      <a href="https://wa.me/79898080823" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white rounded-lg hover:opacity-90 transition-opacity">
+                        <Icon name="MessageCircle" size={18} />
+                        <span className="text-sm">WhatsApp</span>
+                      </a>
                     </div>
                   </div>
                 </CardContent>
@@ -360,15 +360,21 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Icon name="Snowflake" size={24} />
-              <span className="font-semibold">КлиматПро</span>
+              <span className="font-semibold">StroyKlimat</span>
             </div>
-            <p className="text-sm text-muted">© 2024 КлиматПро. Все права защищены.</p>
+            <p className="text-sm text-muted">© 2024 StroyKlimat. Все права защищены.</p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="mailto:s.klimat@inbox.ru" className="hover:text-primary transition-colors" aria-label="Email">
                 <Icon name="Mail" size={20} />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="tel:+79898080823" className="hover:text-primary transition-colors" aria-label="Телефон">
                 <Icon name="Phone" size={20} />
+              </a>
+              <a href="https://t.me/+79898080823" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors" aria-label="Telegram">
+                <Icon name="Send" size={20} />
+              </a>
+              <a href="https://wa.me/79898080823" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors" aria-label="WhatsApp">
+                <Icon name="MessageCircle" size={20} />
               </a>
             </div>
           </div>
