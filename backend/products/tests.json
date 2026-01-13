@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "Get all products",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Filter by price range",
+      "method": "GET",
+      "path": "/?min_price=30000&max_price=50000",
+      "expectedStatus": 200
+    }
+  ]
+}

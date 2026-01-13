@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,80 +9,24 @@ import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 
 type Product = {
-  id: number;
+  id: string;
   name: string;
   brand: string;
   category: string;
+  series?: string;
   power: number;
   type: string;
   price: number;
   image: string;
+  source: string;
+  features?: string[];
 };
 
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: 'Cooper&Hunter Nordic Premium',
-    brand: 'Cooper&Hunter',
-    category: 'Кондиционеры',
-    power: 2.6,
-    type: 'Настенный',
-    price: 42900,
-    image: 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?w=400&h=300&fit=crop'
-  },
-  {
-    id: 2,
-    name: 'Daikin FTXS35K',
-    brand: 'Daikin',
-    category: 'Кондиционеры',
-    power: 3.5,
-    type: 'Настенный',
-    price: 68500,
-    image: 'https://images.unsplash.com/photo-1631545805119-17cbd88d3d53?w=400&h=300&fit=crop'
-  },
-  {
-    id: 3,
-    name: 'Mitsubishi Electric MSZ-LN25VG',
-    brand: 'Mitsubishi',
-    category: 'Кондиционеры',
-    power: 2.5,
-    type: 'Настенный',
-    price: 89900,
-    image: 'https://images.unsplash.com/photo-1634641283431-5c644bb6f944?w=400&h=300&fit=crop'
-  },
-  {
-    id: 4,
-    name: 'Ballu BSVP-07HN1',
-    brand: 'Ballu',
-    category: 'Кондиционеры',
-    power: 2.0,
-    type: 'Настенный',
-    price: 28900,
-    image: 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?w=400&h=300&fit=crop'
-  },
-  {
-    id: 5,
-    name: 'Electrolux EACS-12HLO',
-    brand: 'Electrolux',
-    category: 'Кондиционеры',
-    power: 3.2,
-    type: 'Настенный',
-    price: 35900,
-    image: 'https://images.unsplash.com/photo-1631545805119-17cbd88d3d53?w=400&h=300&fit=crop'
-  },
-  {
-    id: 6,
-    name: 'Haier Flexis AS25S2SF1FA',
-    brand: 'Haier',
-    category: 'Кондиционеры',
-    power: 2.5,
-    type: 'Настенный',
-    price: 52900,
-    image: 'https://images.unsplash.com/photo-1634641283431-5c644bb6f944?w=400&h=300&fit=crop'
-  }
-];
+const API_URL = 'https://functions.poehali.dev/09c39634-7289-4c5c-821b-a92a6e2b6b9a';
 
 const Index = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -90,10 +34,27 @@ const Index = () => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
 
-  const brands = ['Cooper&Hunter', 'Daikin', 'Mitsubishi', 'Ballu', 'Electrolux', 'Haier'];
-  const types = ['Настенный', 'Напольный', 'Канальный', 'Кассетный'];
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-  const filteredProducts = mockProducts.filter(product => {
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(API_URL);
+      const data = await response.json();
+      setProducts(data.products || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const brands = Array.from(new Set(products.map(p => p.brand))).sort();
+  const types = Array.from(new Set(products.map(p => p.type))).sort();
+
+  const filteredProducts = products.filter(product => {
     const priceMatch = product.price >= priceRange[0] && product.price <= priceRange[1];
     const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
     const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(product.type);
@@ -231,8 +192,16 @@ const Index = () => {
                 </p>
               </div>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product, index) => (
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="text-center">
+                    <Icon name="Loader2" className="animate-spin text-primary mx-auto mb-4" size={48} />
+                    <p className="text-muted-foreground">Загрузка товаров...</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map((product, index) => (
                   <Card
                     key={product.id}
                     className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-scale-in"
@@ -258,6 +227,16 @@ const Index = () => {
                         <Icon name="Box" size={16} className="text-primary" />
                         <span>{product.type}</span>
                       </div>
+                      {product.series && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Icon name="Tag" size={16} />
+                          <span>{product.series}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                        <Icon name="Database" size={14} />
+                        <span>{product.source}</span>
+                      </div>
                       <p className="text-2xl font-bold text-primary pt-2">
                         {product.price.toLocaleString()} ₽
                       </p>
@@ -272,8 +251,9 @@ const Index = () => {
                       </Button>
                     </CardFooter>
                   </Card>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
