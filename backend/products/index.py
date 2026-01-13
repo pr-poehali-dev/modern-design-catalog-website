@@ -1,6 +1,7 @@
 import json
 import os
 from typing import List, Dict, Any
+from parsers import parse_klimatprof, parse_breez
 
 def handler(event: dict, context) -> dict:
     '''
@@ -80,131 +81,17 @@ def get_all_products() -> List[Dict[str, Any]]:
     '''Получает все товары из обоих источников'''
     products = []
     
-    klimatprof_products = [
-        {
-            'id': 'kp_1',
-            'name': 'Fujitsu ASYG09KMCC/AOYG09KMCC',
-            'brand': 'Fujitsu',
-            'category': 'Инверторные сплит-системы',
-            'series': 'Genios',
-            'power': 2.5,
-            'type': 'Настенный',
-            'price': 49900,
-            'source': 'klimatprof.online',
-            'image': 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Wi-Fi управление', 'Очистка воздуха']
-        },
-        {
-            'id': 'kp_2',
-            'name': 'Lessar LS-H09KLA2A/LU-H09KLA2A',
-            'brand': 'Lessar',
-            'category': 'Инверторные сплит-системы',
-            'series': 'Stella',
-            'power': 2.6,
-            'type': 'Настенный',
-            'price': 32900,
-            'source': 'klimatprof.online',
-            'image': 'https://images.unsplash.com/photo-1631545805119-17cbd88d3d53?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Низкий уровень шума', 'Режим сна']
-        },
-        {
-            'id': 'kp_3',
-            'name': 'TOSOT T09H-SLyR/I/T09H-SLyR/O',
-            'brand': 'TOSOT',
-            'category': 'Инверторные сплит-системы',
-            'series': 'Lyra',
-            'power': 2.6,
-            'type': 'Настенный',
-            'price': 38900,
-            'source': 'klimatprof.online',
-            'image': 'https://images.unsplash.com/photo-1634641283431-5c644bb6f944?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Самоочистка', 'LED дисплей']
-        },
-        {
-            'id': 'kp_4',
-            'name': 'Quattroclima QV-LO09WAE/QN-LO09WAE',
-            'brand': 'Quattroclima',
-            'category': 'Инверторные сплит-системы',
-            'series': 'Lanterna',
-            'power': 2.5,
-            'type': 'Настенный',
-            'price': 29900,
-            'source': 'klimatprof.online',
-            'image': 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Турбо режим', 'Таймер 24ч']
-        }
-    ]
+    try:
+        klimatprof_products = parse_klimatprof()
+        products.extend(klimatprof_products)
+    except Exception as e:
+        print(f'Error parsing klimatprof: {e}')
     
-    breez_products = [
-        {
-            'id': 'br_1',
-            'name': 'Hisense AS-09HR4SYDDC15',
-            'brand': 'Hisense',
-            'category': 'Кондиционеры',
-            'series': 'Smart DC Inverter',
-            'power': 2.6,
-            'type': 'Настенный',
-            'price': 44900,
-            'source': 'breez.ru',
-            'image': 'https://images.unsplash.com/photo-1631545805119-17cbd88d3d53?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Wi-Fi', 'Самодиагностика']
-        },
-        {
-            'id': 'br_2',
-            'name': 'Royal Clima RC-V29HN',
-            'brand': 'Royal Clima',
-            'category': 'Кондиционеры',
-            'series': 'Vela',
-            'power': 2.7,
-            'type': 'Настенный',
-            'price': 36900,
-            'source': 'breez.ru',
-            'image': 'https://images.unsplash.com/photo-1634641283431-5c644bb6f944?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Антибактериальный фильтр', 'Авторестарт']
-        },
-        {
-            'id': 'br_3',
-            'name': 'Funai RACI-SN25HP.D03',
-            'brand': 'Funai',
-            'category': 'Кондиционеры',
-            'series': 'Sensei',
-            'power': 2.5,
-            'type': 'Настенный',
-            'price': 41900,
-            'source': 'breez.ru',
-            'image': 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Плазменный фильтр', 'I Feel функция']
-        },
-        {
-            'id': 'br_4',
-            'name': 'Zilon ZT-09IS',
-            'brand': 'Zilon',
-            'category': 'Кондиционеры',
-            'series': 'Inverter',
-            'power': 2.6,
-            'type': 'Настенный',
-            'price': 33900,
-            'source': 'breez.ru',
-            'image': 'https://images.unsplash.com/photo-1631545805119-17cbd88d3d53?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Ночной режим', 'Холод/Тепло']
-        },
-        {
-            'id': 'br_5',
-            'name': 'Hitachi RAK-18RPD/RAC-18WPD',
-            'brand': 'Hitachi',
-            'category': 'Кондиционеры',
-            'series': 'Performance',
-            'power': 5.0,
-            'type': 'Настенный',
-            'price': 67900,
-            'source': 'breez.ru',
-            'image': 'https://images.unsplash.com/photo-1634641283431-5c644bb6f944?w=400&h=300&fit=crop',
-            'features': ['Инвертор', 'Мощная система', '3D воздушный поток']
-        }
-    ]
-    
-    products.extend(klimatprof_products)
-    products.extend(breez_products)
+    try:
+        breez_products = parse_breez()
+        products.extend(breez_products)
+    except Exception as e:
+        print(f'Error parsing breez: {e}')
     
     return products
 
